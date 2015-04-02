@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "statsd.net.core", "statsd.n
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleExternalBackend", "ExampleExternalBackend\ExampleExternalBackend.csproj", "{9075F1AA-EAEA-44B1-8801-7F1A2FA6722D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalFxBackend", "..\signalfx-statsd.net-plugin\SignalFxBackend.csproj", "{A31FE29F-67BB-4E35-A95D-65C1DE413E16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{9075F1AA-EAEA-44B1-8801-7F1A2FA6722D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9075F1AA-EAEA-44B1-8801-7F1A2FA6722D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9075F1AA-EAEA-44B1-8801-7F1A2FA6722D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A31FE29F-67BB-4E35-A95D-65C1DE413E16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A31FE29F-67BB-4E35-A95D-65C1DE413E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A31FE29F-67BB-4E35-A95D-65C1DE413E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A31FE29F-67BB-4E35-A95D-65C1DE413E16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

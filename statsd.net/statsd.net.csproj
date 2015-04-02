@@ -33,6 +33,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>moo.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,7 +109,11 @@
     <Compile Include="Framework\StatsdMessageRouterBlock.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="moo.pfx" />
     <None Include="Properties\SlowCheetah\SlowCheetah.Transforms.targets" />
+    <None Include="SignalFxInc-private.pfx" />
+    <None Include="SignalFxInc-private.pvk" />
+    <None Include="SignalFxInc1.pfx" />
     <None Include="statsdnet.config.graphite">
       <SubType>Designer</SubType>
     </None>
@@ -140,6 +150,9 @@
     </None>
     <None Include="packages.config" />
     <None Include="readme.md" />
+    <None Include="statsdnet.config.signalfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\statsd.net.core\statsd.net.core.csproj">
