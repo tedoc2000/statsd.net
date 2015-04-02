@@ -59,7 +59,7 @@ namespace statsd.net_Tests
     [TestMethod]
     public void ProcessedRawLine_GotValidRawMessageInstance()
     {
-      _systemMetrics.Setup(p => p.LogCount("parser.LinesSeen", 1)).Verifiable();
+      _systemMetrics.Setup(p => p.LogCount("parser.linesSeen", 1)).Verifiable();
 
       var timestamp = DateTime.Now.Ticks;
       var metric = "a.raw.metric:100|r|" + timestamp;
@@ -73,7 +73,7 @@ namespace statsd.net_Tests
     [TestMethod]
     public void ProcessedRawLine_NoTimeStamp_GotValidRawMessageInstance()
     {
-      _systemMetrics.Setup(p => p.LogCount("parser.LinesSeen", 1)).Verifiable();
+      _systemMetrics.Setup(p => p.LogCount("parser.linesSeen", 1)).Verifiable();
 
       var timestamp = DateTime.Now.Ticks;
       var metric = "a.raw.metric:100|r";

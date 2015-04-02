@@ -83,7 +83,7 @@ namespace statsd.net_Tests
       _intervalService.Pulse();
       _block.CompleteAndWait();
 
-      Assert.AreEqual(2, _outputBuffer.Items.Count);
+      Assert.AreEqual(1, _outputBuffer.Items.Count);
       Assert.AreEqual(1, _outputBuffer["foo"]);
       Assert.AreEqual(1, _outputBuffer["bar"]);
 
@@ -93,7 +93,7 @@ namespace statsd.net_Tests
       _block.CompleteAndWait();
 
       // Ensure they correct
-      Assert.AreEqual(2, _outputBuffer.Items.Count);
+      Assert.AreEqual(0, _outputBuffer.Items.Count);
       Assert.AreEqual(1, _outputBuffer["foo"]);
       Assert.AreEqual(1, _outputBuffer["bar"]);
     }
