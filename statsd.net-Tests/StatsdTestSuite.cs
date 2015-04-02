@@ -38,8 +38,8 @@ namespace statsd.net_Tests
       _outputBlock = new OutputBufferBlock<GraphiteLine>();
       _client = new StatsdClient.Statsd("", 0, outputChannel : new InAppListenerOutputChannel(_listener));
       _statsd.AddListener(_listener);
-      _statsd.AddBackend(_backend, _systemMetrics, "testing");
       _systemMetrics = new Mock<ISystemMetricsService>().Object;
+      _statsd.AddBackend(_backend, _systemMetrics, "testing");
     }
 
     [TestCleanup]

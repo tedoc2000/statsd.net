@@ -51,7 +51,7 @@ namespace statsd.net_Tests
     public void LogMultipleValuesForOneGauge_OneGraphiteLine_Success()
     {
       TestUtility.Range(100, false).ForEach(p => _block.Post(new Gauge("foo", p)));
-      _block.WaitUntilAllItemsProcessed();
+      _block.WaitUntilAllItemsProcessed(sleepTimeMS: 2000);
       _intervalService.Pulse();
       _block.CompleteAndWait();
 
@@ -83,7 +83,7 @@ namespace statsd.net_Tests
       _intervalService.Pulse();
       _block.CompleteAndWait();
 
-      Assert.AreEqual(2, _outputBuffer.Items.Count);
+      Assert.AreEqual(1, _outputBuffer.Items.Count);
       Assert.AreEqual(1, _outputBuffer["foo"]);
       Assert.AreEqual(1, _outputBuffer["bar"]);
 
@@ -93,7 +93,7 @@ namespace statsd.net_Tests
       _block.CompleteAndWait();
 
       // Ensure they correct
-      Assert.AreEqual(2, _outputBuffer.Items.Count);
+      Assert.AreEqual(0, _outputBuffer.Items.Count);
       Assert.AreEqual(1, _outputBuffer["foo"]);
       Assert.AreEqual(1, _outputBuffer["bar"]);
     }
