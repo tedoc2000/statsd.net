@@ -33,10 +33,10 @@ namespace statsd.net.core.Structures
 
   public abstract class Bucket<TItemType> : Bucket
   {
-    public KeyValuePair<string, TItemType>[] Items { get; private set; }
+    public KeyValuePair<MetricInfo, TItemType>[] Items { get; private set; }
 
     public Bucket(BucketType bucketType, 
-      KeyValuePair<string, TItemType>[] items, 
+      KeyValuePair<MetricInfo, TItemType>[] items, 
       long epoch, 
       string rootNamespace = "")
       : base(bucketType, epoch, rootNamespace)

@@ -62,6 +62,7 @@
     <Compile Include="Listeners\MSSQLRelayListener.cs" />
     <Compile Include="Messages\Calendargram.cs" />
     <Compile Include="Messages\CalendargramRetentionPeriod.cs" />
+    <Compile Include="Messages\TaggedStatsdMessage.cs" />
     <Compile Include="Services\TimeWindowService.cs" />
     <Compile Include="Structures\DecoderBlockPacket.cs" />
     <Compile Include="Listeners\HttpStatsListener.cs" />

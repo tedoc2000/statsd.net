@@ -13,11 +13,11 @@ namespace statsd.net.shared.Structures
 {
   public class PercentileBucket : Bucket
   {
-    public KeyValuePair<string, DatapointBox>[] Timings { get; private set; }
+    public KeyValuePair<MetricInfo, DatapointBox>[] Timings { get; private set; }
     public int Percentile { get; private set; }
     public string PercentileName { get; private set; }
 
-    public PercentileBucket(KeyValuePair<string, DatapointBox>[] timings,
+    public PercentileBucket(KeyValuePair<MetricInfo, DatapointBox>[] timings,
       long epoch,
       string rootNamespace,
       string percentileName,
@@ -39,7 +39,7 @@ namespace statsd.net.shared.Structures
         {
           lines.Add(
             new GraphiteLine(
-              RootNamespace + measurements.Key + PercentileName, 
+              RootNamespace + measurements.Key.Name + PercentileName, 
               percentileValue, 
               Epoch)
           );
@@ -57,14 +57,14 @@ namespace statsd.net.shared.Structures
         {
           target.Post(
             new GraphiteLine(
-              RootNamespace + measurements.Key + PercentileName, 
+              RootNamespace + measurements.Key.Name + PercentileName, 
               percentileValue, 
               Epoch));
         }
       }
     }
 
-    public bool TryComputePercentile(KeyValuePair<string, DatapointBox> pair, out double percentileValue)
+    public bool TryComputePercentile(KeyValuePair<MetricInfo, DatapointBox> pair, out double percentileValue)
     {
       return PercentileCalculator.TryCompute(
         pair.Value.ToArray().ToList(),
@@ -82,7 +82,7 @@ namespace statsd.net.shared.Structures
         {
           graphiteLines.Add(
             new GraphiteLine(
-              RootNamespace + measurements.Key + PercentileName,
+              RootNamespace + measurements.Key.Name + PercentileName,
               percentileValue,
               Epoch ).ToString()
               );

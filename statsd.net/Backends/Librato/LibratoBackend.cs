@@ -134,11 +134,11 @@ namespace statsd.net.Backends.Librato
           {
             if (_config.CountersAsGauges)
             {
-              _batchBlock.Post(new LibratoGauge(counterBucket.RootNamespace + count.Key, count.Value, bucket.Epoch));
+              _batchBlock.Post(new LibratoGauge(counterBucket.RootNamespace + count.Key.Name, count.Value, bucket.Epoch));
             }
             else
             {
-              _batchBlock.Post(new LibratoCounter(counterBucket.RootNamespace + count.Key, count.Value, bucket.Epoch));
+              _batchBlock.Post(new LibratoCounter(counterBucket.RootNamespace + count.Key.Name, count.Value, bucket.Epoch));
             }
           }
           break;
@@ -146,14 +146,14 @@ namespace statsd.net.Backends.Librato
           var gaugeBucket = bucket as GaugesBucket;
           foreach (var gauge in gaugeBucket.Gauges)
           {
-            _batchBlock.Post(new LibratoGauge(gaugeBucket.RootNamespace + gauge.Key, gauge.Value, bucket.Epoch));
+            _batchBlock.Post(new LibratoGauge(gaugeBucket.RootNamespace + gauge.Key.Name, gauge.Value, bucket.Epoch));
           }
           break;
         case BucketType.Timing:
           var timingBucket = bucket as LatencyBucket;
           foreach (var timing in timingBucket.Latencies)
           {
-            _batchBlock.Post(new LibratoTiming(timingBucket.RootNamespace + timing.Key,
+            _batchBlock.Post(new LibratoTiming(timingBucket.RootNamespace + timing.Key.Name,
               timing.Value.Count,
               timing.Value.Sum,
               timing.Value.SumSquares,
@@ -169,7 +169,7 @@ namespace statsd.net.Backends.Librato
           {
             if (percentileBucket.TryComputePercentile(pair, out percentileValue))
             {
-              _batchBlock.Post(new LibratoGauge(percentileBucket.RootNamespace + pair.Key + percentileBucket.PercentileName,
+              _batchBlock.Post(new LibratoGauge(percentileBucket.RootNamespace + pair.Key.Name + percentileBucket.PercentileName,
                 percentileValue,
                 bucket.Epoch));
             }

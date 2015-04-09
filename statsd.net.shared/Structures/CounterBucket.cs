@@ -12,7 +12,7 @@ namespace statsd.net.shared.Structures
 {
   public class CounterBucket : Bucket<double>
   {
-    public CounterBucket(KeyValuePair<string, double>[] counts, long epoch, string rootNamespace = "")
+    public CounterBucket(KeyValuePair<MetricInfo, double>[] counts, long epoch, string rootNamespace = "")
       : base(BucketType.Count, counts, epoch, rootNamespace)
     {
     }
@@ -22,7 +22,7 @@ namespace statsd.net.shared.Structures
       var lines = new List<GraphiteLine>();
       foreach (var count in Items)
       {
-        lines.Add(new GraphiteLine(RootNamespace + count.Key, count.Value, Epoch));
+        lines.Add(new GraphiteLine(RootNamespace + count.Key.Name, count.Value, Epoch));
       }
       return lines.ToArray();
     }
@@ -31,7 +31,7 @@ namespace statsd.net.shared.Structures
     {
       foreach (var count in Items)
       {
-        target.Post(new GraphiteLine(RootNamespace + count.Key, count.Value, Epoch));
+        target.Post(new GraphiteLine(RootNamespace + count.Key.Name, count.Value, Epoch));
       }
     }
 
@@ -40,7 +40,7 @@ namespace statsd.net.shared.Structures
       var lines = new List<string>();
       foreach (var count in Items)
       {
-        lines.Add(new GraphiteLine(RootNamespace + count.Key, count.Value, Epoch).ToString()); 
+        lines.Add(new GraphiteLine(RootNamespace + count.Key.Name, count.Value, Epoch).ToString()); 
       }
       return String.Join(Environment.NewLine, lines.ToArray());
     }

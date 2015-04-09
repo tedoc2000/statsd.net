@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace statsd.net.shared.Messages
 {
-  public sealed class Timing : StatsdMessage
+  public sealed class Timing : TaggedStatsdMessage
   {
     public double ValueMS { get; set; }
 
-    public Timing(string name, double valueMS)
+    public Timing(string name, double valueMS, string[] tags = null) : base(tags)
     {
       Name = name;
       ValueMS = valueMS;

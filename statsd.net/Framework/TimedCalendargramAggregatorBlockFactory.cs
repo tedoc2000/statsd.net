@@ -11,6 +11,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Collections.Concurrent;
 using log4net;
 using statsd.net.shared.Structures;
+using statsd.net.core.Structures;
 
 namespace statsd.net.Framework
 {
@@ -26,7 +27,7 @@ namespace statsd.net.Framework
           ITimeWindowService timeWindowService,
           ILog log)
         {
-            var windows = new ConcurrentDictionary<string, ConcurrentDictionary<string, double>>();
+            var windows = new ConcurrentDictionary<string, ConcurrentDictionary<MetricInfo, double>>();
             var root = rootNamespace;
             var ns = String.IsNullOrEmpty(rootNamespace) ? "" : rootNamespace + ".";
 
@@ -34,18 +35,18 @@ namespace statsd.net.Framework
               {
                   var calendargram = p as Calendargram;
                   var metricName = calendargram.Name + METRIC_IDENTIFIER_SEPARATOR + calendargram.Value;
-
+                  var blockKey = new MetricInfo(metricName, calendargram.Tags);
                   var period = timeWindowService.GetTimeWindow().GetTimePeriod(calendargram.Period);
                   windows.AddOrUpdate(period,
                     (key) =>
                     {
-                        var window = new ConcurrentDictionary<string, double>();
-                        window.AddOrUpdate(metricName, (key2) => 1, (key2, oldValue) => 1);
+                        var window = new ConcurrentDictionary<MetricInfo, double>();
+                        window.AddOrUpdate(blockKey, (key2) => 1, (key2, oldValue) => 1);
                         return window;
                     },
                     (key, window) =>
                     {
-                        window.AddOrUpdate(metricName, (key2) => 1, (key2, oldValue) => 1);
+                        window.AddOrUpdate(blockKey, (key2) => 1, (key2, oldValue) => 1);
                         return window;
                     }
                   );
@@ -69,34 +70,35 @@ namespace statsd.net.Framework
 
                   foreach (var period in periodsNotPresent)
                   {
-                      ConcurrentDictionary<String, double> window;
+                      ConcurrentDictionary<MetricInfo, double> window;
                       if (windows.TryRemove(period, out window))
                       {
                           var parts = period.Split(UNDERSCORE);
                           var qualifier = "." + parts[0] + "." + parts[1];
 
                           var metricsAndValues = window.ToArray();
-                          var metrics = new Dictionary<String, double>();
+                          var metrics = new Dictionary<MetricInfo, double>();
                           for (int index = 0; index < metricsAndValues.Length; index++)
                           {
-                              var metricName = metricsAndValues[index].Key.Split(
+                              var metricName = metricsAndValues[index].Key.Name.Split(
                                   METRIC_IDENTIFIER_SEPARATOR_SPLITTER, 
                                   StringSplitOptions.RemoveEmptyEntries
                               )[0] + qualifier;
+                              var newBlockKey = new MetricInfo(metricName, metricsAndValues[index].Key.Tags);
 
-                              if (metrics.ContainsKey(metricName))
+                              if (metrics.ContainsKey(newBlockKey))
                               {
-                                  metrics[metricName] += 1;
+                                  metrics[newBlockKey] += 1;
                               }
                               else
                               {
-                                  metrics[metricName] = 1;
+                                  metrics[newBlockKey] = 1;
                               }
                           }
 
                           var metricList = metrics.Select(metric =>
                           {
-                              return new KeyValuePair<string, double>(
+                              return new KeyValuePair<MetricInfo, double>(
                                 metric.Key,
                                 metric.Value
                               );

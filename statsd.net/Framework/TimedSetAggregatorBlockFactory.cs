@@ -11,6 +11,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Collections.Concurrent;
 using log4net;
 using statsd.net.shared.Structures;
+using statsd.net.core.Structures;
 
 namespace statsd.net.Framework
 {
@@ -25,8 +26,8 @@ namespace statsd.net.Framework
           IIntervalService intervalService,
           ILog log)
         {
-            var sets = new ConcurrentDictionary<string, ConcurrentDictionary<string, int>>();
-            var windows = new ConcurrentDictionary<string, ConcurrentDictionary<string, bool>>();
+            var sets = new ConcurrentDictionary<string, ConcurrentDictionary<MetricInfo, int>>();
+            var windows = new ConcurrentDictionary<string, ConcurrentDictionary<MetricInfo, bool>>();
             var root = rootNamespace;
             var ns = String.IsNullOrEmpty(rootNamespace) ? "" : rootNamespace + ".";
             var timeWindow = new TimeWindow();
@@ -36,18 +37,19 @@ namespace statsd.net.Framework
                   var set = p as Set;
                   var metricName = set.Name + METRIC_IDENTIFIER_SEPARATOR + set.Value;
 
+                  var metricInfo = new MetricInfo(metricName, set.Tags);
                   foreach (var period in timeWindow.AllPeriods)
                   {
                       windows.AddOrUpdate(period,
                         (key) =>
                         {
-                            var window = new ConcurrentDictionary<string, bool>();
-                            window.AddOrUpdate(metricName, (key2) => true, (key2, oldValue) => true);
+                            var window = new ConcurrentDictionary<MetricInfo, bool>();
+                            window.AddOrUpdate(metricInfo, (key2) => true, (key2, oldValue) => true);
                             return window;
                         },
                         (key, window) =>
                         {
-                            window.AddOrUpdate(metricName, (key2) => true, (key2, oldValue) => true);
+                            window.AddOrUpdate(metricInfo, (key2) => true, (key2, oldValue) => true);
                             return window;
                         }
                       );
@@ -75,7 +77,7 @@ namespace statsd.net.Framework
 
                   foreach (var period in periodsNotPresent)
                   {
-                      ConcurrentDictionary<String, bool> window;
+                      ConcurrentDictionary<MetricInfo, bool> window;
                       // Take this window out of the dictionary
                       if (windows.TryRemove(period, out window))
                       {
@@ -83,23 +85,24 @@ namespace statsd.net.Framework
                           var qualifier = "." + parts[0] + "." + parts[1];
 
                           var metricsAndValues = window.ToArray();
-                          var metrics = new Dictionary<String, double>();
+                          var metrics = new Dictionary<MetricInfo, double>();
                           for (int index = 0; index < metricsAndValues.Length; index++)
                           {
-                              var metricName = metricsAndValues[index].Key.Split(METRIC_IDENTIFIER_SEPARATOR_SPLITTER, StringSplitOptions.RemoveEmptyEntries)[0] + qualifier;
-                              if (metrics.ContainsKey(metricName))
+                              var metricName = metricsAndValues[index].Key.Name.Split(METRIC_IDENTIFIER_SEPARATOR_SPLITTER, StringSplitOptions.RemoveEmptyEntries)[0] + qualifier;
+                              var metricInfo = new MetricInfo(metricName, metricsAndValues[index].Key.Tags);
+                              if (metrics.ContainsKey(metricInfo))
                               {
-                                  metrics[metricName] += 1;
+                                  metrics[metricInfo] += 1;
                               }
                               else
                               {
-                                  metrics[metricName] = 1;
+                                  metrics[metricInfo] = 1;
                               }
                           }
 
                           var metricList = metrics.Select(metric =>
                               {
-                                  return new KeyValuePair<string, double>(
+                                  return new KeyValuePair<MetricInfo, double>(
                                     metric.Key,
                                     metric.Value
                                   );

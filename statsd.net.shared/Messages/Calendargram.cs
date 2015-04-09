@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace statsd.net.shared.Messages
 {
-    public sealed class Calendargram : StatsdMessage
+    public sealed class Calendargram : TaggedStatsdMessage
     {
         public string Value { get; private set; }
         public CalendargramRetentionPeriod Period { get; private set; }
@@ -21,7 +21,7 @@ namespace statsd.net.shared.Messages
         public const string PERIOD_MONTH = "m";
         public const string PERIOD_DAY_OF_WEEK = "dow";
 
-        public Calendargram(string name, string value, string period)
+        public Calendargram(string name, string value, string period, string[] tags = null) : base(tags)
         {
             if (value.Length > MAX_VALUE_LENGTH)
             {
@@ -44,7 +44,7 @@ namespace statsd.net.shared.Messages
             }
         }
 
-        public Calendargram(string name, string value, CalendargramRetentionPeriod period)
+        public Calendargram(string name, string value, CalendargramRetentionPeriod period, string[] tags = null) : base(tags)
         {
             if (value.Length > MAX_VALUE_LENGTH)
             {
@@ -58,7 +58,7 @@ namespace statsd.net.shared.Messages
 
         public override string ToString()
         {
-            return Name + ":" + Value + "|cg|" + _rawPeriod;
+            return String.Format("{0}:{1}|cg|{2}", Name, Value, _rawPeriod);
         }
     }
 }

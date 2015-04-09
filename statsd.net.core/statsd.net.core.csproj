@@ -46,8 +46,10 @@
     <Compile Include="ISystemMetricsService.cs" />
     <Compile Include="Messages\GraphiteLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structures\MetricInfo.cs" />
     <Compile Include="Structures\Bucket.cs" />
     <Compile Include="Structures\BucketType.cs" />
+    <Compile Include="Structures\MetricTags.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

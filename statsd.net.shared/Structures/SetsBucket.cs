@@ -12,9 +12,9 @@ namespace statsd.net.shared.Structures
 {
   public class SetsBucket : Bucket
   {
-    public List<KeyValuePair<string, List<KeyValuePair<double, bool>>>> Sets { get; private set; }
+    public List<KeyValuePair<MetricInfo, List<KeyValuePair<double, bool>>>> Sets { get; private set; }
 
-    public SetsBucket(List<KeyValuePair<string, List<KeyValuePair<double, bool>>>> sets,
+    public SetsBucket(List<KeyValuePair<MetricInfo, List<KeyValuePair<double, bool>>>> sets,
       long epoch, 
       string rootNamespace = "")
       : base(BucketType.Set, epoch, rootNamespace)
@@ -29,7 +29,7 @@ namespace statsd.net.shared.Structures
       {
         foreach (var item in set.Value)
         {
-          lines.Add(new GraphiteLine(RootNamespace + set.Key, 1, Epoch));
+          lines.Add(new GraphiteLine(RootNamespace + set.Key.Name, 1, Epoch));
         }
       }
       return lines.ToArray();
@@ -41,7 +41,7 @@ namespace statsd.net.shared.Structures
       {
         foreach (var item in set.Value)
         {
-          target.Post(new GraphiteLine(RootNamespace + set.Key, 1, Epoch));
+          target.Post(new GraphiteLine(RootNamespace + set.Key.Name, 1, Epoch));
         }
       }
     }

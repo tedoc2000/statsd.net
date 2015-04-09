@@ -12,9 +12,9 @@ namespace statsd.net.shared.Structures
 {
   public class GaugesBucket : Bucket
   {
-    public KeyValuePair<string, double>[] Gauges { get; set; }
+    public KeyValuePair<MetricInfo, double>[] Gauges { get; set; }
 
-    public GaugesBucket(KeyValuePair<string, double>[] gauges, long epoch, string rootNamespace = "")
+    public GaugesBucket(KeyValuePair<MetricInfo, double>[] gauges, long epoch, string rootNamespace = "")
       : base(BucketType.Gauge, epoch, rootNamespace)
     {
       Gauges = gauges;
@@ -25,7 +25,7 @@ namespace statsd.net.shared.Structures
       var lines = new List<GraphiteLine>();
       foreach (var gauge in Gauges)
       {
-        lines.Add(new GraphiteLine(RootNamespace + gauge.Key, gauge.Value, Epoch));
+        lines.Add(new GraphiteLine(RootNamespace + gauge.Key.Name, gauge.Value, Epoch));
       }
       return lines.ToArray();
     }
@@ -34,7 +34,7 @@ namespace statsd.net.shared.Structures
     {
       foreach (var gauge in Gauges)
       {
-        target.Post(new GraphiteLine(RootNamespace + gauge.Key, gauge.Value, Epoch));
+        target.Post(new GraphiteLine(RootNamespace + gauge.Key.Name, gauge.Value, Epoch));
       }
     }
 
@@ -43,7 +43,7 @@ namespace statsd.net.shared.Structures
       var lines = new List<string>();
       foreach (var count in Gauges)
       {
-        lines.Add(new GraphiteLine(RootNamespace + count.Key, count.Value, Epoch).ToString()); 
+        lines.Add(new GraphiteLine(RootNamespace + count.Key.Name, count.Value, Epoch).ToString()); 
       }
       return String.Join(Environment.NewLine, lines.ToArray());
     }

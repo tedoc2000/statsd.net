@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace statsd.net.shared.Messages
 {
-  public sealed class Counter : StatsdMessage
+  public sealed class Counter : TaggedStatsdMessage
   {
     public double Value { get; set; }
     public float? SampleRate { get; set; }
 
-    public Counter(string name, double value)
+    public Counter(string name, double value, string[] tags = null) : base(tags)
     {
       if (value < 0)
       {
@@ -23,7 +23,7 @@ namespace statsd.net.shared.Messages
       MessageType = MessageType.Counter;
     }
 
-    public Counter(string name, double value, float sampleRate)
+    public Counter(string name, double value, float sampleRate, string[] tags = null) : base(tags)
     {
       if (value < 0)
       {

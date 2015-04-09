@@ -12,10 +12,10 @@ namespace statsd.net.shared.Structures
 {
   public class LatencyBucket : Bucket
   {
-    public KeyValuePair<string, LatencyDatapointBox>[] Latencies { get; private set; }
+    public KeyValuePair<MetricInfo, LatencyDatapointBox>[] Latencies { get; private set; }
     private bool _calculateSumSquares;
 
-    public LatencyBucket(KeyValuePair<string, LatencyDatapointBox>[] latencies, 
+    public LatencyBucket(KeyValuePair<MetricInfo, LatencyDatapointBox>[] latencies, 
       long epoch,
       string rootNamespace,
       bool calculateSumSquares)
@@ -47,29 +47,29 @@ namespace statsd.net.shared.Structures
       }
     }
 
-    private GraphiteLine [] MakeGraphiteLines ( KeyValuePair<string, LatencyDatapointBox> latency )
+    private GraphiteLine [] MakeGraphiteLines ( KeyValuePair<MetricInfo, LatencyDatapointBox> latency )
     {
       if ( _calculateSumSquares )
       {
         return new GraphiteLine [] 
           {
-            new GraphiteLine(RootNamespace + latency.Key + ".count", latency.Value.Count, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".min", latency.Value.Min, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".max", latency.Value.Max, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".mean", latency.Value.Mean, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".sum", latency.Value.Sum, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".sumSquares", latency.Value.SumSquares, Epoch)
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".count", latency.Value.Count, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".min", latency.Value.Min, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".max", latency.Value.Max, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".mean", latency.Value.Mean, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".sum", latency.Value.Sum, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".sumSquares", latency.Value.SumSquares, Epoch)
           };
       }
       else 
       {
         return new GraphiteLine [] 
           {
-            new GraphiteLine(RootNamespace + latency.Key + ".count", latency.Value.Count, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".min", latency.Value.Min, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".max", latency.Value.Max, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".mean", latency.Value.Mean, Epoch),
-            new GraphiteLine(RootNamespace + latency.Key + ".sum", latency.Value.Sum, Epoch)
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".count", latency.Value.Count, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".min", latency.Value.Min, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".max", latency.Value.Max, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".mean", latency.Value.Mean, Epoch),
+            new GraphiteLine(RootNamespace + latency.Key.Name + ".sum", latency.Value.Sum, Epoch)
           };
       }
     }

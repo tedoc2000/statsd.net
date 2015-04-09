@@ -81,6 +81,7 @@
     <Compile Include="Integration\LibratoBackend.cs" />
     <Compile Include="Integration\StatsdToStatsdConfiguration.cs" />
     <Compile Include="MessageParserBlockTests.cs" />
+    <Compile Include="MetricInfoTests.cs" />
     <Compile Include="StatsdTestSuite.cs" />
     <Compile Include="Infrastructure\InAppBackend.cs" />
     <Compile Include="Infrastructure\InAppListener.cs" />

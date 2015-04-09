@@ -21,14 +21,15 @@ namespace statsd.net.Framework
       IIntervalService intervalService,
       ILog log)
     {
-      var counters = new ConcurrentDictionary<string, double>();
+      var counters = new ConcurrentDictionary<MetricInfo, double>();
       var root = rootNamespace;
       var ns = String.IsNullOrEmpty(rootNamespace) ? "" : (rootNamespace + ".");
 
       var incoming = new ActionBlock<StatsdMessage>(p =>
         {
           var counter = p as Counter;
-          counters.AddOrUpdate(counter.Name, counter.Value, (key, oldValue) => oldValue + counter.Value);
+          var metricInfo = new MetricInfo(counter.Name, counter.Tags);
+          counters.AddOrUpdate(metricInfo, counter.Value, (key, oldValue) => oldValue + counter.Value);
         },
         new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded });
 

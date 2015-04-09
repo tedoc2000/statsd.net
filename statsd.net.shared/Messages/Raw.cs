@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace statsd.net.shared.Messages
 {
-  public class Raw : StatsdMessage
+  public class Raw : TaggedStatsdMessage
   {
     public double Value { get; set; }
     public long? Timestamp { get; set; }
 
     public Raw(string name,
       double value,
-      long? timestamp = null)
+      long? timestamp = null,
+      string[] tags = null) : base(tags)
     {
       MessageType = MessageType.Raw;
       Name = name;
